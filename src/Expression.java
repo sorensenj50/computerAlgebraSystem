@@ -1,23 +1,20 @@
 import java.util.ArrayList;
-import java.util.Optional;
-
-
-enum Operation {
-    SUM,
-    PRODUCT,
-}
-
-
 
 public class Expression {
     public double value;
     public ArrayList<Expression> children;
     public Operation operation;
 
+    public Expression() {
+        this.value = 0;
+        this.children = new ArrayList<Expression>();
+        this.operation = Operation.NONE;
+    }
+
     public Expression(int value) {
         this.value = value;
         this.children = new ArrayList<Expression>();
-        this.operation = Operation.SUM;
+        this.operation = Operation.NONE;
     }
 
     public Expression(Operation operation, int... numbers) {
@@ -61,6 +58,7 @@ public class Expression {
             System.out.print("(");
             for (Expression child : this.children) {
                 child.display();
+                this.display(this.operation);
             }
             System.out.print(")");
 
@@ -90,6 +88,18 @@ public class Expression {
             total = this.value;
         }
         return total;
+    }
+
+    public void display(Operation operation) {
+        if (operation == Operation.SUM) {
+            System.out.print("+");
+        } else if (operation == Operation.SUBTRACT) {
+            System.out.print("-");
+        } else if (operation == Operation.DIVIDE) {
+            System.out.print("/");
+        } else {
+            System.out.print("*");
+        }
     }
 }
 
