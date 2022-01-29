@@ -1,7 +1,5 @@
-public class Value { // make super class of number and variable
-    public double value;
-
-    public Value(double value) {
-        this.value = value;
-    }
+public abstract class Value {
+    public abstract String getSymbol();
+    public abstract boolean isKnown();
+    public abstract boolean isNull();
 }

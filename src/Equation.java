@@ -9,20 +9,20 @@ public class Equation {
 
     public Equation(Expression rhs) {
         this.rhs = rhs;
-        this.lhs = new Expression(0);
+        this.lhs = new Expression();
     }
 
     public boolean isValid() {
-        return this.rhs.evaluate() == this.lhs.evaluate();
+        return this.rhs.evaluateDecider() == this.lhs.evaluateDecider();
     }
 
     public void setToZero(String side) {
         if (side == "rhs") {
             this.lhs = new Expression(Operation.SUBTRACT, this.lhs, this.rhs);
-            this.rhs = new Expression(0);
+            this.rhs = new Expression();
         } else if (side == "lhs") {
             this.rhs = new Expression(Operation.SUBTRACT, this.rhs, this.lhs);
-            this.lhs = new Expression(0);
+            this.lhs = new Expression();
         }
     }
 

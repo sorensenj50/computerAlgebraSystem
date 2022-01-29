@@ -1,96 +1,104 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Expression {
-    public double value;
-    public ArrayList<Expression> children;
+    public Value value;
     public Operation operation;
+    public ArrayList<Expression> children;
 
     public Expression() {
-        this.value = 0;
-        this.children = new ArrayList<Expression>();
         this.operation = Operation.NONE;
+        this.value = getZeroNumber();
+        this.children = getEmptyChildren();
     }
 
-    public Expression(int value) {
-        this.value = value;
-        this.children = new ArrayList<Expression>();
+
+    public Expression(Operation operation, Expression... children) {
+        this.operation = operation;
+        this.value = getZeroNumber();
+        this.children = new ArrayList<Expression>(Arrays.asList(children));
+    }
+
+    public Expression(Value value) {
         this.operation = Operation.NONE;
-    }
-
-    public Expression(Operation operation, int... numbers) {
-        this.operation = operation;
-        this.value = 0;
-        this.children = new ArrayList<Expression>();
-
-        for (int num : numbers) {
-            this.children.add(new Expression(num));
-        }
-    }
-
-    public Expression(Operation operation, Expression... expressions) {
-        this.operation = operation;
-        this.value = 0;
-        this.children = new ArrayList<Expression>();
-
-        for (Expression child: expressions) {
-            this.children.add(child);
-        }
-    }
-
-    public Expression(Operation operation, int value, Expression... expressions) {
-        this.operation = operation;
         this.value = value;
-        this.children = new ArrayList<Expression>();
+        this.children = getEmptyChildren();
+    }
 
-        for (Expression child: expressions){
-            this.children.add(child);
+    public Expression(Operation operation, Value... values) {
+        this.operation = operation;
+        this.value = getZeroNumber();
+
+        ArrayList<Expression> children = getEmptyChildren();
+        for (Value value: values) {
+            children.add(new Expression(value));
+        }
+        this.children = children;
+    }
+
+    public Expression(Operation operation, double... values) {
+        this.operation = operation;
+        this.value = getZeroNumber();
+        ArrayList<Expression> children = getEmptyChildren();
+
+        for (double value: values) {
+            children.add(new Expression(new Number(value)));
+        }
+        this.children = children;
+    }
+
+    public Expression(double value) {
+        this.operation = Operation.NONE;
+        this.value = new Number(value);
+        this.children = getEmptyChildren();
+    }
+
+    public boolean isRootNode() {
+        return (this.children.size() == 0);
+    }
+
+    private Number getZeroNumber() {
+        return new Number(0);
+    }
+
+    private ArrayList<Expression> getEmptyChildren() {
+        return new ArrayList<Expression>();
+    }
+
+
+    public double evaluateDecider() {
+        switch (this.operation) {
+            case SUM:
+                return this.evaluateSum(false);
+            case SUBTRACT:
+                return this.evaluateSum(true);
+            case PRODUCT:
+                return this.evaluateProduct(false);
+            case DIVIDE:
+                return this.evaluateProduct(true);
+            default:
+                return 0;
         }
     }
 
-    private static String getRepresentation(double num) {
-        return String.valueOf(num);
-    }
 
-    public boolean containsChildren() { return this.children.size() > 0;}
-
-    public void display() {
-        if (this.containsChildren()) {
-            System.out.print("(");
-            for (Expression child : this.children) {
-                child.display();
-                this.display(this.operation);
-            }
-            System.out.print(")");
-
+    private double evaluateSum(boolean inversed) {
+        if (inversed) {
+            return -1.0;
         } else {
-            System.out.print(getRepresentation(this.value) + " ");
+            return 1.0;
         }
     }
 
-    public double evaluate() {
-        double total;
-
-        if (this.operation == Operation.PRODUCT) {
-            total = 1;
+    private double evaluateProduct(boolean inversed) {
+        if (inversed) {
+            return -1.0;
         } else {
-            total = 0;
+            return 1.0;
         }
-
-        if (this.containsChildren()) {
-            for (Expression child : this.children) {
-                if (this.operation == Operation.SUM) {
-                    total += child.evaluate();
-                } else if (this.operation == Operation.PRODUCT) {
-                    total *= child.evaluate();
-                }
-            }
-        } else {
-            total = this.value;
-        }
-        return total;
     }
 
-    public void display(Operation operation) {
+    public void represent(Operation operation) {
         if (operation == Operation.SUM) {
             System.out.print("+");
         } else if (operation == Operation.SUBTRACT) {
@@ -101,6 +109,20 @@ public class Expression {
             System.out.print("*");
         }
     }
+
+    public void display() {
+        if (this.isRootNode()) {
+            System.out.print(this.value + " ");
+        } else {
+            this.represent(this.operation);
+            System.out.print("( ");
+            for (Expression child: this.children) {
+                child.display();
+            }
+            System.out.print(")");
+        }
+    }
 }
+
 
 
