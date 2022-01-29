@@ -1,15 +1,27 @@
 import java.util.ArrayList;
+import java.util.Optional;
+
+
+enum Operation {
+    SUM,
+    PRODUCT,
+}
+
+
 
 public class Expression {
     public double value;
     public ArrayList<Expression> children;
+    public Operation operation;
 
     public Expression(int value) {
         this.value = value;
         this.children = new ArrayList<Expression>();
+        this.operation = Operation.SUM;
     }
 
-    public Expression(int... numbers) {
+    public Expression(Operation operation, int... numbers) {
+        this.operation = operation;
         this.value = 0;
         this.children = new ArrayList<Expression>();
 
@@ -18,7 +30,8 @@ public class Expression {
         }
     }
 
-    public Expression(Expression... expressions) {
+    public Expression(Operation operation, Expression... expressions) {
+        this.operation = operation;
         this.value = 0;
         this.children = new ArrayList<Expression>();
 
@@ -27,7 +40,8 @@ public class Expression {
         }
     }
 
-    public Expression(int value, Expression... expressions) {
+    public Expression(Operation operation, int value, Expression... expressions) {
+        this.operation = operation;
         this.value = value;
         this.children = new ArrayList<Expression>();
 
@@ -55,11 +69,22 @@ public class Expression {
         }
     }
 
-    public double evaluateSum() {
-        double total = 0;
+    public double evaluate() {
+        double total;
+
+        if (this.operation == Operation.PRODUCT) {
+            total = 1;
+        } else {
+            total = 0;
+        }
+
         if (this.containsChildren()) {
             for (Expression child : this.children) {
-                total += child.evaluateSum();
+                if (this.operation == Operation.SUM) {
+                    total += child.evaluate();
+                } else if (this.operation == Operation.PRODUCT) {
+                    total *= child.evaluate();
+                }
             }
         } else {
             total = this.value;
