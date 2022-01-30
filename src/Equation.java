@@ -17,18 +17,28 @@ enum EquationSide {
 
 
 public class Equation {
-    public HashMap equationSides;
+    public HashMap<String, Expression> equationSides;
 
     public Equation(Expression lhs, Expression rhs) {
         this.equationSides = new HashMap<String, Expression>();
+        this.equationSides.put(EquationSide.LHS.getDisplayString(), lhs);
+        this.equationSides.put(EquationSide.RHS.getDisplayString(), rhs);
     }
 
     private Expression getFromMap(EquationSide side) {
-        return new Expression();
+        return this.equationSides.get(side.getDisplayString());
     }
 
     private void setToMap(EquationSide side, Expression expression) {
         this.equationSides.put(side.getDisplayString(), expression);
+    }
+
+    private EquationSide getOtherEquationSide(EquationSide side) {
+        if (side == EquationSide.LHS) {
+            return EquationSide.RHS;
+        } else {
+            return EquationSide.LHS;
+        }
     }
 
 
@@ -37,46 +47,48 @@ public class Equation {
         this.getFromMap(EquationSide.LHS).display();
         System.out.print(" = ");
         this.getFromMap(EquationSide.RHS).display();
+        System.out.println("");
     }
 
     public void solveFor(String variableSymbol) {
-//        boolean lhs = this.findVariable(variableSymbol, this.lhs);
-//        boolean rhs = this.findVariable(variableSymbol, this.rhs);
+        boolean isLeft = this.findVariable(variableSymbol, this.getFromMap(EquationSide.LHS));
+        boolean isRight = this.findVariable(variableSymbol, this.getFromMap(EquationSide.RHS));
 
-
-//        if (lhs) {
-//            System.out.println("lhs");
-//        } else if (rhs) {
-//            System.out.println("rhs");
-//        } else {
-//            System.out.println("Not Found");
-//        }
+        if (isLeft) {
+            this.isolateVariable(EquationSide.LHS, variableSymbol);
+        } else if (isRight) {
+            this.isolateVariable(EquationSide.RHS, variableSymbol);
+        } else {
+            System.out.println("Not Found");
+        }
     }
 
 
 
-    private void isolateVariable(EquationSideClass isolateSide, EquationSideClass otherSide, String variableSymbol) {
-        if (isolateSide.expression.isVariable(variableSymbol)) {
+    private void isolateVariable(EquationSide isolateSide, String variableSymbol) {
+        Expression isolateSideExpression = this.getFromMap(isolateSide);
+        Expression otherSideExpression = this.getFromMap(this.getOtherEquationSide(isolateSide));
+
+        if (isolateSideExpression.isVariable(variableSymbol)) {
 
         } else {
-            for (Expression child: otherSide.expression.children) {
+            for (Expression child: isolateSideExpression.children) {
                 if (child.isVariable(variableSymbol)) {
 
                 } else {
-//                    this.otherSide = new Expression(child.getInverseOperator(), child, this.getOtherSide(side));
+                    Expression newOtherSide = new Expression(isolateSideExpression.getInverseOperator(), child, otherSideExpression);
+                    this.setToMap(this.getOtherEquationSide(isolateSide), newOtherSide);
+
+
+                    if (isolateSideExpression.children.size() == 2) {
+                        isolateSideExpression.children.remove(child);
+                        Expression newIsolateSideExpression = isolateSideExpression.children.get(0);
+                        this.setToMap(isolateSide, newIsolateSideExpression);
+                        break;
+                    }
                 }
             }
         }
-    }
-}
-
-class EquationSideClass {
-    Expression expression;
-    EquationSide sideName;
-
-    public EquationSideClass(Expression expression, EquationSide sideName) {
-        this.expression = expression;
-        this.sideName = sideName;
     }
 
     private boolean findVariable(String variableSymbol, Expression expression) {

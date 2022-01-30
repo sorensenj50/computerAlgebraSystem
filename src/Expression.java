@@ -1,15 +1,18 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
 
 public class Expression {
     public Value value;
     public Operation operation;
     public ArrayList<Expression> children;
+    private UUID id;
 
     public Expression() {
         this.operation = Operation.NONE;
         this.value = getNullValue();
         this.children = getEmptyChildren();
+        this.id = UUID.randomUUID();
     }
 
 
@@ -17,12 +20,14 @@ public class Expression {
         this.operation = operation;
         this.value = getNullValue();
         this.children = new ArrayList<Expression>(Arrays.asList(children));
+        this.id = UUID.randomUUID();
     }
 
     public Expression(Value value) {
         this.operation = Operation.NONE;
         this.value = value;
         this.children = getEmptyChildren();
+        this.id = UUID.randomUUID();
     }
 
     public Expression(Operation operation, Value... values) {
@@ -34,6 +39,7 @@ public class Expression {
             children.add(new Expression(value));
         }
         this.children = children;
+        this.id = UUID.randomUUID();
     }
 
     public Expression(Operation operation, double... values) {
@@ -45,12 +51,35 @@ public class Expression {
             children.add(new Expression(new Number(value)));
         }
         this.children = children;
+        this.id = UUID.randomUUID();
     }
 
     public Expression(double value) {
         this.operation = Operation.NONE;
         this.value = new Number(value);
         this.children = getEmptyChildren();
+        this.id = UUID.randomUUID();
+    }
+
+    public Expression(String variableSymbol) {
+        this.operation = Operation.NONE;
+        this.value = new Variable(variableSymbol);
+        this.children = getEmptyChildren();
+        this.id = UUID.randomUUID();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if(object instanceof Expression) {
+            Expression other = (Expression) object;
+            return this.id.equals(other.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
     public boolean isRootNode() {
