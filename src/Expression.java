@@ -8,14 +8,14 @@ public class Expression {
 
     public Expression() {
         this.operation = Operation.NONE;
-        this.value = getZeroNumber();
+        this.value = getNullValue();
         this.children = getEmptyChildren();
     }
 
 
     public Expression(Operation operation, Expression... children) {
         this.operation = operation;
-        this.value = getZeroNumber();
+        this.value = getNullValue();
         this.children = new ArrayList<Expression>(Arrays.asList(children));
     }
 
@@ -27,7 +27,7 @@ public class Expression {
 
     public Expression(Operation operation, Value... values) {
         this.operation = operation;
-        this.value = getZeroNumber();
+        this.value = getNullValue();
 
         ArrayList<Expression> children = getEmptyChildren();
         for (Value value: values) {
@@ -38,7 +38,7 @@ public class Expression {
 
     public Expression(Operation operation, double... values) {
         this.operation = operation;
-        this.value = getZeroNumber();
+        this.value = getNullValue();
         ArrayList<Expression> children = getEmptyChildren();
 
         for (double value: values) {
@@ -57,8 +57,8 @@ public class Expression {
         return (this.children.size() == 0);
     }
 
-    private Number getZeroNumber() {
-        return new Number(0);
+    private NullValue getNullValue() {
+        return new NullValue();
     }
 
     private ArrayList<Expression> getEmptyChildren() {
@@ -101,15 +101,27 @@ public class Expression {
         }
     }
 
-    public void represent(Operation operation) {
-        if (operation == Operation.SUM) {
+    public void represent() {
+        if (this.operation == Operation.SUM) {
             System.out.print("+");
-        } else if (operation == Operation.SUBTRACT) {
+        } else if (this.operation == Operation.SUBTRACT) {
             System.out.print("-");
-        } else if (operation == Operation.DIVIDE) {
+        } else if (this.operation == Operation.DIVIDE) {
             System.out.print("/");
         } else {
             System.out.print("*");
+        }
+    }
+
+    public Operation getInverseOperator() {
+        if (this.operation == Operation.SUM) {
+            return Operation.SUBTRACT;
+        } else if (this.operation == Operation.SUBTRACT) {
+            return Operation.SUM;
+        } else if (this.operation == Operation.PRODUCT) {
+            return Operation.DIVIDE;
+        } else {
+            return Operation.PRODUCT;
         }
     }
 
@@ -117,13 +129,17 @@ public class Expression {
         if (this.isRootNode()) {
             System.out.print(this.value.getSymbol() + " ");
         } else {
-            this.represent(this.operation);
+            this.represent();
             System.out.print("( ");
             for (Expression child: this.children) {
                 child.display();
             }
             System.out.print(")");
         }
+    }
+
+    public double evaluate() {
+        return 1.0;
     }
 }
 
