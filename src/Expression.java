@@ -65,6 +65,9 @@ public class Expression {
         return new ArrayList<Expression>();
     }
 
+    public boolean isVariable(String variableSymbol) {
+        return this.isRootNode() && !this.value.isKnown() && this.value.getSymbol() == variableSymbol;
+    }
 
     public double evaluateDecider() {
         switch (this.operation) {
@@ -112,7 +115,7 @@ public class Expression {
 
     public void display() {
         if (this.isRootNode()) {
-            System.out.print(this.value + " ");
+            System.out.print(this.value.getSymbol() + " ");
         } else {
             this.represent(this.operation);
             System.out.print("( ");
