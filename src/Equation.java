@@ -64,7 +64,6 @@ public class Equation {
     }
 
 
-
     private void isolateVariable(EquationSide isolateSide, String variableSymbol) {
         Expression isolateSideExpression = this.getFromMap(isolateSide);
         Expression otherSideExpression = this.getFromMap(this.getOtherEquationSide(isolateSide));
@@ -79,12 +78,11 @@ public class Equation {
                     Expression newOtherSide = new Expression(isolateSideExpression.getInverseOperator(), child, otherSideExpression);
                     this.setToMap(this.getOtherEquationSide(isolateSide), newOtherSide);
 
-
                     if (isolateSideExpression.children.size() == 2) {
                         isolateSideExpression.children.remove(child);
                         Expression newIsolateSideExpression = isolateSideExpression.children.get(0);
                         this.setToMap(isolateSide, newIsolateSideExpression);
-                        break;
+                        isolateVariable(isolateSide, variableSymbol);
                     }
                 }
             }

@@ -1,15 +1,30 @@
+import java.util.Scanner;
+
 public class main {
     public static void main(String[] args) {
 
-//        Expression rhs = new Expression(Operation.PRODUCT,  new Expression(Operation.SUM, 9, 3), new Expression(new Variable("x")));
-//        Expression lhs = new Expression(Operation.DIVIDE, new Expression(1), new Expression(new Number(9)));
-        Expression lhs = new Expression(Operation.PRODUCT, new Expression(5), new Expression("x"));
-        Expression rhs = new Expression(Operation.SUM, 5, 5);
-        Equation equation = new Equation(lhs, rhs);
+//        Expression old_lhs = new Expression(Operation.PRODUCT, new Expression(5), new Expression("x"));
+//        Expression lhs = new Expression(Operation.SUM, new Expression(5), old_lhs);
+//
+//        Expression rhs = new Expression(Operation.SUM, 5, 5);
+//        Equation equation = new Equation(lhs, rhs);
+//
+//        equation.display();
+//
+//        equation.solveFor("x");
+//
+//        equation.display();
 
-        equation.solveFor("x");
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process p = runtime.exec("which pdflatex");
+            Scanner scanner = new Scanner(p.getInputStream());
 
-        equation.display();
-
+            while (scanner.hasNextLine()) {
+                System.out.println(scanner.nextLine());
+            }
+        } catch(Exception e) {
+            System.out.printf("Error");
+        }
     }
 }
