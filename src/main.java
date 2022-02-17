@@ -15,16 +15,7 @@ public class main {
 //
 //        equation.display();
 
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            Process p = runtime.exec("which pdflatex");
-            Scanner scanner = new Scanner(p.getInputStream());
-
-            while (scanner.hasNextLine()) {
-                System.out.println(scanner.nextLine());
-            }
-        } catch(Exception e) {
-            System.out.printf("Error");
-        }
+        LatexManager.fromTemplate();
     }
 }
+
