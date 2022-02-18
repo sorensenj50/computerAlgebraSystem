@@ -29,6 +29,20 @@ public class LatexManager {
         }
     }
 
+    public static void convertToPDF(String filename) {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process p = runtime.exec("pdflatex " + filename);
+            Scanner scanner = new Scanner(p.getInputStream());
+            while(scanner.hasNextLine()) {
+                System.out.println(scanner.nextLine());
+            }
+
+        } catch (Exception e) {
+            System.out.printf(e.getLocalizedMessage());
+        }
+    }
+
     public static void openFile(String filepath) throws IOException {
         File file = new File(filepath);
 
@@ -38,9 +52,7 @@ public class LatexManager {
             return;
         }
 
-        System.out.println("HEre");
         Desktop desktop = Desktop.getDesktop();
-        System.out.println("Here 2");
 
         if(file.exists()) {
             System.out.println("File Exists");
@@ -55,9 +67,9 @@ public class LatexManager {
         \\documentclass{article}
         \\usepackage[utf8]{inputenc}
                                 
-        \\title{NewProject}
+        \\title{New Project}
         \\author{John Sorensen}
-        \\date{February 2022}
+        \\date{February 2022 (test 4)}
                                 
         \\begin{document}
                                 
@@ -71,8 +83,17 @@ public class LatexManager {
 
         createFile("/Users/johnsorensen/Documents/latexFiles/test.tex");
         writeToFile("test.tex", templateDoc);
+
+//        try {
+//            openFile("/Users/johnsorensen/Documents/latexFiles/test.tex");
+//        } catch(Exception e) {
+//            System.out.printf(e.getLocalizedMessage());
+//        }
+
+        convertToPDF("/Users/johnsorensen/Documents/latexFiles/test.tex");
+
         try {
-            openFile("/Users/johnsorensen/Documents/latexFiles/test.tex");
+            openFile("/Users/johnsorensen/IdeaProjects/cas/src/test.pdf");
         } catch(Exception e) {
             System.out.printf(e.getLocalizedMessage());
         }
